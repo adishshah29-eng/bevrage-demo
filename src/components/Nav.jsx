@@ -5,12 +5,12 @@ export default function Nav() {
     <header className="nav">
       <span className="nav-logo">2CAL</span>
       <nav className="nav-links">
-        <a href="#interest">the drink</a>
-        <a href="#ingredients">ingredients</a>
+        <a href="#stack">the stack</a>
         <a href="#shop">shop</a>
+        <a href="#social">instagram</a>
       </nav>
       <a className="nav-cta" href="#shop">
-        Shop now
+        Shop 2CAL
       </a>
     </header>
   )

@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ArrowRight } from '@phosphor-icons/react'
 import './HeroScrub.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -16,7 +17,6 @@ export default function HeroScrub() {
   const logoRef = useRef(null)
   const taglineRef = useRef(null)
   const ctaRef = useRef(null)
-  const scrollCueRef = useRef(null)
 
   const imagesRef = useRef([])
   const [loadProgress, setLoadProgress] = useState(0)
@@ -134,9 +134,6 @@ export default function HeroScrub() {
       // Atmospheric overlay dissipates alongside it
       tl.fromTo(fogRef.current, { opacity: 0.9 }, { opacity: 0, ease: 'none', duration: 0.42 }, 0)
 
-      // Scroll cue fades out immediately
-      tl.to(scrollCueRef.current, { opacity: 0, duration: 0.08, ease: 'none' }, 0)
-
       // Logo mark arrives early, once the fog has mostly cleared
       tl.fromTo(
         logoRef.current,
@@ -195,14 +192,12 @@ export default function HeroScrub() {
                 <span>lionsmane</span>
                 <span>l-theanine</span>
               </div>
-              <button className="hero-button">Shop the can</button>
+              <a className="hero-button" href="#shop">
+                Shop 2CAL
+                <ArrowRight weight="bold" size={16} />
+              </a>
             </div>
           </div>
-        </div>
-
-        <div className="hero-scroll-cue" ref={scrollCueRef}>
-          <span>scroll</span>
-          <div className="hero-scroll-line" />
         </div>
 
         {!ready && (

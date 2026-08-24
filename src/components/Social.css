@@ -1,0 +1,94 @@
+.social {
+  background: #0a0908;
+  padding: clamp(4.5rem, 10vw, 8rem) clamp(1.2rem, 6vw, 4rem);
+  border-top: 1px solid rgba(246, 239, 228, 0.08);
+}
+
+.social-head {
+  max-width: 78rem;
+  margin: 0 auto 2.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.social-head h2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+  margin: 0;
+}
+
+.social-follow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border: 1px solid rgba(246, 239, 228, 0.25);
+  border-radius: 999px;
+  padding: 0.6em 1.1em;
+  transition: border-color 0.25s ease, color 0.25s ease;
+}
+
+.social-follow:hover {
+  border-color: var(--accent-soft);
+  color: var(--accent-soft);
+}
+
+.social-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+.social-tile {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 5;
+  border-radius: 1rem;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.social-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.social-tile:hover img {
+  transform: scale(1.06);
+}
+
+.social-tile-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(10, 9, 8, 0.92) 100%);
+}
+
+.social-tile p {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 1rem;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+
+@media (max-width: 900px) {
+  .social-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

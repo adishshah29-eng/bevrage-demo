@@ -1,0 +1,158 @@
+.shop {
+  background: #0a0908;
+  padding: clamp(4.5rem, 10vw, 8rem) clamp(1.2rem, 6vw, 4rem);
+  border-top: 1px solid rgba(246, 239, 228, 0.08);
+}
+
+.shop-head {
+  max-width: 36rem;
+  margin: 0 auto 3.5rem;
+}
+
+.shop-head h2 {
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  margin: 0 0 0.7rem;
+}
+
+.shop-head p {
+  color: var(--ink-dim);
+  font-size: 1.02rem;
+  margin: 0;
+  max-width: 46ch;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 68rem;
+  margin: 0 auto;
+}
+
+.shop-card {
+  position: relative;
+  background: #14110d;
+  border: 1px solid rgba(246, 239, 228, 0.1);
+  border-radius: 1.4rem;
+  padding: 2.1rem 1.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.shop-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 94, 46, 0.35);
+}
+
+.shop-card.is-popular {
+  background: linear-gradient(180deg, #1c1610, #14110d);
+  border-color: rgba(255, 154, 82, 0.5);
+  padding: 2.6rem 2rem;
+  box-shadow: 0 24px 50px rgba(255, 94, 46, 0.16);
+}
+
+.shop-badge {
+  position: absolute;
+  top: -0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #0a0908;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.35em 0.9em;
+  border-radius: 999px;
+}
+
+.shop-card-top h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.3rem;
+}
+
+.shop-sub {
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+
+.shop-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.shop-price-amount {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.shop-price-per {
+  color: var(--ink-dim);
+  font-size: 0.82rem;
+}
+
+.shop-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent-soft);
+  font-size: 0.88rem;
+}
+
+.shop-rating span:not(.shop-reviews) {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.shop-reviews {
+  color: var(--ink-dim);
+  font-weight: 400 !important;
+}
+
+.shop-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  margin-top: auto;
+  border: 1px solid rgba(246, 239, 228, 0.25);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 0.85em 1.4em;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.shop-card.is-popular .shop-cta {
+  background: linear-gradient(135deg, var(--accent-soft), var(--accent));
+  color: #0a0908;
+  border-color: transparent;
+}
+
+.shop-cta:hover {
+  border-color: var(--accent-soft);
+  color: var(--accent-soft);
+}
+
+.shop-card.is-popular .shop-cta:hover {
+  color: #0a0908;
+  filter: brightness(1.08);
+}
+
+@media (max-width: 900px) {
+  .shop-grid {
+    grid-template-columns: 1fr;
+    max-width: 26rem;
+  }
+
+  .shop-card.is-popular {
+    order: -1;
+  }
+}

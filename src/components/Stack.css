@@ -1,0 +1,133 @@
+.stack {
+  background: #0a0908;
+  padding: clamp(4.5rem, 10vw, 8rem) clamp(1.2rem, 6vw, 4rem);
+}
+
+.stack-head {
+  max-width: 42rem;
+  margin: 0 auto 3.5rem;
+}
+
+.stack-head h2 {
+  font-size: clamp(1.9rem, 4.2vw, 3rem);
+  line-height: 1.15;
+  margin: 0 0 0.9rem;
+  text-wrap: balance;
+}
+
+.stack-head h2 em {
+  font-style: italic;
+  color: var(--accent-soft);
+}
+
+.stack-head p {
+  color: var(--ink-dim);
+  font-size: 1.05rem;
+  margin: 0;
+  max-width: 42ch;
+}
+
+.stack-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  grid-template-rows: repeat(2, minmax(220px, auto));
+  gap: 1.25rem;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+.stack-card {
+  position: relative;
+  isolation: isolate;
+  border-radius: 1.4rem;
+  overflow: hidden;
+  border: 1px solid rgba(246, 239, 228, 0.08);
+}
+
+.stack-card.is-featured {
+  grid-row: span 2;
+}
+
+.stack-card-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.7) brightness(0.55);
+  transform: scale(1.02);
+  transition: transform 0.8s ease, filter 0.8s ease;
+}
+
+.stack-card:hover .stack-card-bg {
+  transform: scale(1.08);
+  filter: saturate(0.85) brightness(0.62);
+}
+
+.stack-card-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 9, 8, 0.55) 0%, rgba(10, 9, 8, 0.88) 78%);
+}
+
+.stack-card-content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.9rem;
+  padding: 1.8rem;
+}
+
+.stack-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  border: 1px solid rgba(246, 239, 228, 0.25);
+  color: var(--accent-soft);
+}
+
+.stack-card.is-featured .stack-icon {
+  width: 3.6rem;
+  height: 3.6rem;
+}
+
+.stack-card-content h3 {
+  margin: 0 0 0.15rem;
+  font-size: 1.3rem;
+}
+
+.stack-card.is-featured .stack-card-content h3 {
+  font-size: 1.7rem;
+}
+
+.stack-role {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+}
+
+.stack-card-content p {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 32ch;
+}
+
+@media (max-width: 780px) {
+  .stack-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .stack-card.is-featured {
+    grid-row: auto;
+    min-height: 280px;
+  }
+}
