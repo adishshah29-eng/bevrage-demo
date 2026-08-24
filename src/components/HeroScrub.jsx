@@ -9,13 +9,20 @@ gsap.registerPlugin(ScrollTrigger)
 const FRAME_COUNT = 120
 const FRAME_PATH = (i) => `/hero-frames/frame_${String(i).padStart(3, '0')}.webp`
 
+const ANNOTATIONS = [
+  { label: '75mg clean caffeine' },
+  { label: 'lion\'s mane' },
+  { label: 'l-theanine' },
+]
+
 export default function HeroScrub() {
   const wrapRef = useRef(null)
   const pinRef = useRef(null)
+  const stageRef = useRef(null)
   const canvasRef = useRef(null)
-  const fogRef = useRef(null)
-  const logoRef = useRef(null)
-  const taglineRef = useRef(null)
+  const fogCoolRef = useRef(null)
+  const fogWarmRef = useRef(null)
+  const headlineRef = useRef(null)
   const ctaRef = useRef(null)
 
   const imagesRef = useRef([])
@@ -46,7 +53,8 @@ export default function HeroScrub() {
     }
   }, [])
 
-  // Draw current frame to canvas, sized to cover the viewport
+  // Draw current frame to canvas, cover-fit but biased so the can sits
+  // off-center (asymmetric composition) instead of dead-centered.
   const drawFrame = (index) => {
     const canvas = canvasRef.current
     const img = imagesRef.current[index]
@@ -56,6 +64,8 @@ export default function HeroScrub() {
     const dpr = Math.min(window.devicePixelRatio || 1, 2)
     const w = canvas.clientWidth
     const h = canvas.clientHeight
+    const isMobile = w <= 780
+    const focusX = isMobile ? 0.5 : 0.37
 
     if (canvas.width !== w * dpr || canvas.height !== h * dpr) {
       canvas.width = w * dpr
@@ -69,7 +79,7 @@ export default function HeroScrub() {
     if (imgRatio > canvasRatio) {
       dh = h
       dw = h * imgRatio
-      dx = (w - dw) / 2
+      dx = focusX * w - 0.5 * dw
       dy = 0
     } else {
       dw = w
@@ -107,8 +117,14 @@ export default function HeroScrub() {
 
       if (prefersReduced) {
         drawFrame(FRAME_COUNT - 1)
-        gsap.set(fogRef.current, { opacity: 0 })
-        gsap.set([logoRef.current, taglineRef.current, ctaRef.current], { opacity: 1, y: 0 })
+        gsap.set([fogCoolRef.current, fogWarmRef.current], { opacity: 0 })
+        gsap.set(canvasRef.current, { filter: 'none' })
+        gsap.set([headlineRef.current, ctaRef.current, '.hero-annotation'], {
+          opacity: 1,
+          x: 0,
+          y: 0,
+        })
+        gsap.set('.hero-annotation-tick', { scaleX: 1 })
         return
       }
 
@@ -123,45 +139,89 @@ export default function HeroScrub() {
         0,
       )
 
-      // Fog -> focus: the canvas itself sharpens and de-saturates back to color
+      // Fog -> focus, graded in color, not just blur: cold desaturated
+      // blue-grey sharpens and warms back into the brand's real palette.
       tl.fromTo(
         canvasRef.current,
-        { filter: 'blur(22px) saturate(0.35) brightness(0.75)' },
-        { filter: 'blur(0px) saturate(1) brightness(1)', ease: 'none', duration: 0.42 },
+        { filter: 'blur(24px) saturate(0.08) brightness(0.62) contrast(1.05)' },
+        {
+          filter: 'blur(0px) saturate(1) brightness(1) contrast(1)',
+          ease: 'none',
+          duration: 0.44,
+        },
         0,
       )
 
-      // Atmospheric overlay dissipates alongside it
-      tl.fromTo(fogRef.current, { opacity: 0.9 }, { opacity: 0, ease: 'none', duration: 0.42 }, 0)
+      // Two atmosphere layers cross-fade: cold fog dissipates, warm glow arrives
+      tl.fromTo(fogCoolRef.current, { opacity: 0.85 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0)
+      tl.fromTo(fogWarmRef.current, { opacity: 0 }, { opacity: 0.55, ease: 'none', duration: 0.44 }, 0.04)
 
-      // Logo mark arrives early, once the fog has mostly cleared
+      // Headline slides in from the right, breaking the dead-center layout
       tl.fromTo(
-        logoRef.current,
-        { opacity: 0, y: 24 },
-        { opacity: 1, y: 0, duration: 0.12, ease: 'none' },
+        headlineRef.current,
+        { opacity: 0, x: 36 },
+        { opacity: 1, x: 0, duration: 0.16, ease: 'none' },
         0.28,
       )
 
-      // Tagline holds through the mid-scroll
+      // Ingredient annotations draw in one at a time, spec-sheet style
       tl.fromTo(
-        taglineRef.current,
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.14, ease: 'none' },
+        '.hero-annotation-tick',
+        { scaleX: 0 },
+        { scaleX: 1, ease: 'none', stagger: 0.1, duration: 0.06 },
         0.46,
       )
-      tl.to(taglineRef.current, { opacity: 0, y: -14, duration: 0.1, ease: 'none' }, 0.78)
+      tl.fromTo(
+        '.hero-annotation-label',
+        { opacity: 0, x: -8 },
+        { opacity: 1, x: 0, ease: 'none', stagger: 0.1, duration: 0.08 },
+        0.48,
+      )
 
-      // CTA + ingredient chips land at the end, over the sharp final frame
+      // CTA lands last, once every annotation has resolved
       tl.fromTo(
         ctaRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.16, ease: 'none' },
-        0.82,
+        { opacity: 0, y: 18 },
+        { opacity: 1, y: 0, duration: 0.14, ease: 'none' },
+        0.86,
       )
     }, wrapRef)
 
     return () => ctx.revert()
   }, [ready])
+
+  // Cursor-reactive tilt on the product shot (desktop pointer devices only)
+  useEffect(() => {
+    const stage = stageRef.current
+    const pin = pinRef.current
+    if (!stage || !pin) return
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    if (reduce || !canHover) return
+
+    const setRotateX = gsap.quickTo(stage, 'rotationX', { duration: 0.8, ease: 'power3.out' })
+    const setRotateY = gsap.quickTo(stage, 'rotationY', { duration: 0.8, ease: 'power3.out' })
+
+    const onMove = (event) => {
+      const rect = pin.getBoundingClientRect()
+      const px = (event.clientX - rect.left) / rect.width - 0.5
+      const py = (event.clientY - rect.top) / rect.height - 0.5
+      setRotateY(px * 7)
+      setRotateX(py * -7)
+    }
+    const onLeave = () => {
+      setRotateX(0)
+      setRotateY(0)
+    }
+
+    pin.addEventListener('mousemove', onMove)
+    pin.addEventListener('mouseleave', onLeave)
+    return () => {
+      pin.removeEventListener('mousemove', onMove)
+      pin.removeEventListener('mouseleave', onLeave)
+    }
+  }, [])
 
   useEffect(() => {
     const onResize = () => ScrollTrigger.refresh()
@@ -172,31 +232,34 @@ export default function HeroScrub() {
   return (
     <section className="hero-wrap" ref={wrapRef}>
       <div className="hero-pin" ref={pinRef}>
-        <canvas ref={canvasRef} className="hero-canvas" />
-        <div className="hero-fog" ref={fogRef} />
+        <div className="hero-stage" ref={stageRef}>
+          <canvas ref={canvasRef} className="hero-canvas" />
+        </div>
+        <div className="hero-fog hero-fog-cool" ref={fogCoolRef} />
+        <div className="hero-fog hero-fog-warm" ref={fogWarmRef} />
+        <div className="hero-side-scrim" />
         <div className="hero-vignette" />
 
         <div className="hero-copy">
-          <div className="hero-logo" ref={logoRef}>
-            2CAL
-          </div>
-          <div className="hero-bottom">
-            <div className="hero-tagline" ref={taglineRef}>
+          <div className="hero-lockup">
+            <h1 className="hero-headline" ref={headlineRef}>
               <span className="script">the drink for</span>
-              <br />
               brainmaxxing
+            </h1>
+
+            <div className="hero-annotations">
+              {ANNOTATIONS.map((item) => (
+                <div className="hero-annotation" key={item.label}>
+                  <span className="hero-annotation-tick" />
+                  <span className="hero-annotation-label">{item.label}</span>
+                </div>
+              ))}
             </div>
-            <div className="hero-cta" ref={ctaRef}>
-              <div className="hero-chips">
-                <span>caffeine</span>
-                <span>lionsmane</span>
-                <span>l-theanine</span>
-              </div>
-              <a className="hero-button" href="#shop">
-                Shop 2CAL
-                <ArrowRight weight="bold" size={16} />
-              </a>
-            </div>
+
+            <a className="hero-button" href="#shop" ref={ctaRef}>
+              Shop 2CAL
+              <ArrowRight weight="bold" size={16} />
+            </a>
           </div>
         </div>
 
