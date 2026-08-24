@@ -1,0 +1,50 @@
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.4rem clamp(1.2rem, 4vw, 3rem);
+  color: var(--ink);
+  mix-blend-mode: difference;
+}
+
+.nav-logo {
+  font-family: var(--font-script);
+  font-style: italic;
+  font-size: 1.4rem;
+  letter-spacing: 0.02em;
+}
+
+.nav-links {
+  display: none;
+  gap: 2rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+}
+
+.nav-links a {
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.nav-links a:hover {
+  opacity: 1;
+}
+
+.nav-cta {
+  font-size: 0.8rem;
+  text-decoration: none;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  padding: 0.55em 1.2em;
+}
+
+@media (min-width: 780px) {
+  .nav-links {
+    display: flex;
+  }
+}

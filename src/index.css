@@ -1,0 +1,44 @@
+:root {
+  --bg: #0a0908;
+  --ink: #f6efe4;
+  --ink-dim: rgba(246, 239, 228, 0.62);
+  --accent: #ff5e2e;
+  --accent-soft: #ff9a52;
+  --fog: #ffb066;
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-script: 'Instrument Serif', Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-display);
+  overflow-x: hidden;
+  width: 100%;
+}
+
+#root {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+::selection {
+  background: var(--accent);
+  color: #0a0908;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
