@@ -13,6 +13,19 @@
   isolation: isolate;
 }
 
+/* The visual stage (3D can + fog layers) is its own sized box so the WebGL
+   container always has a definite height to render into. On desktop .fog-pin
+   itself is a definite 100vh, so this just fills it; on mobile .fog-pin is
+   auto-height (to let copy flow below), so the stage needs its own explicit
+   height instead of inheriting the parent's — see the mobile override below. */
+.fog-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+
 .fog-bg {
   position: absolute;
   inset: -6% 0;
@@ -45,14 +58,48 @@
   top: calc((var(--i) * 7.1%) % 100%);
 }
 
-.fog-subject {
+.fog-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.fog-canvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.fog-fallback {
   position: relative;
   z-index: 2;
   width: min(30vw, 220px);
   object-fit: cover;
   border-radius: 1rem;
   box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
-  opacity: 0;
+}
+
+.fog-loading {
+  position: absolute;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(241, 233, 219, 0.2);
+  border-top-color: rgba(241, 233, 219, 0.8);
+  animation: fog-spin 0.9s linear infinite;
+}
+
+@keyframes fog-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fog-loading {
+    animation: none;
+  }
 }
 
 .fog-copy {
@@ -93,8 +140,16 @@
     padding: 4rem 0;
   }
 
-  .fog-subject {
+  .fog-fallback {
     width: min(50vw, 200px);
+  }
+
+  /* Fixed viewport-relative height instead of 100% (the auto-height .fog-pin
+     has no definite height for a percentage to resolve against on mobile —
+     that gap was rendering the WebGL canvas far taller than the visible
+     screen, reading as an oversized, cropped can). */
+  .fog-stage {
+    height: 62vh;
   }
 
   .fog-copy {

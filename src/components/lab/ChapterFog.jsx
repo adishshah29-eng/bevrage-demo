@@ -1,100 +1,161 @@
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { createCanScene, supportsWebGL } from './canScene.js'
 import './ChapterFog.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-// Chapter 1 — "The Fog". Atmospheric Sublime pattern: the first 60% of the
-// pin is empty atmosphere (haze thickening, background drifting), the final
-// 40% delivers the reveal (subject + title). Depth layers at 0.05 / 0.2 /
-// 0.5 / 0.85, distinct from every other chapter's set.
+// Chapter 1 — "The Fog". Atmospheric Sublime pattern, now built around the
+// real 3D can (canScene.js) instead of a flat still: the can flies in from
+// off-screen left while tumbling through several rotations, arriving
+// centered as the fog clears (0 -> 0.55 of the pin). Once it has settled,
+// the title reveals (0.6 -> 1.0) — the whole chapter stays pinned for its
+// entire scroll range on desktop, so the info reveal never runs unpinned.
+// Depth layers at 0.05 / 0.2 / 0.5 / 0.85, distinct from every other
+// chapter's set.
 export default function ChapterFog() {
   const sectionRef = useRef(null)
   const pinRef = useRef(null)
+  const canvasWrapRef = useRef(null)
+  const [webglOK, setWebglOK] = useState(true)
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    setWebglOK(supportsWebGL())
+  }, [])
 
   useLayoutEffect(() => {
-    const mm = gsap.matchMedia()
+    if (!webglOK) return
+    const container = canvasWrapRef.current
+    if (!container) return
 
-    mm.add(
-      {
-        isDesktop: '(min-width: 769px) and (prefers-reduced-motion: no-preference)',
-        isMobile: '(max-width: 768px) and (prefers-reduced-motion: no-preference)',
-        reduced: '(prefers-reduced-motion: reduce)',
+    let disposed = false
+    let mm
+
+    const canScene = createCanScene(container, {
+      onLoad: (model) => {
+        if (disposed) return
+        setLoaded(true)
+        setupAnimation(model)
       },
-      (context) => {
-        const { isDesktop, isMobile, reduced } = context.conditions
+      onError: () => setWebglOK(false),
+    })
 
-        if (reduced) {
-          gsap.set('.fog-bg, .fog-haze, .fog-subject, .fog-dust, .fog-copy', { opacity: 1, clearProps: 'transform' })
-          gsap.set('.fog-haze', { opacity: 0.15 })
-          return
-        }
+    function setupAnimation(model) {
+      mm = gsap.matchMedia()
 
-        if (isMobile) {
-          // Not pinned on mobile, so a long scrub range would keep animating
-          // after the section has already scrolled out of view. Use a plain
-          // scroll-coupled entrance reveal instead (transform + opacity).
-          gsap.set('.fog-haze', { opacity: 0.55 })
+      mm.add(
+        {
+          isDesktop: '(min-width: 769px) and (prefers-reduced-motion: no-preference)',
+          isMobile: '(max-width: 768px) and (prefers-reduced-motion: no-preference)',
+          reduced: '(prefers-reduced-motion: reduce)',
+        },
+        (context) => {
+          const { isDesktop, isMobile, reduced } = context.conditions
+
+          if (reduced) {
+            model.position.x = 0
+            model.rotation.y = 0.4
+            canScene.render()
+            gsap.set('.fog-haze', { opacity: 0.15 })
+            gsap.set('.fog-copy', { opacity: 1, clipPath: 'inset(0 0 0% 0)' })
+            return
+          }
+
+          if (isMobile) {
+            model.position.x = -1.3
+            model.rotation.y = -Math.PI * 1.2
+            gsap.set('.fog-haze', { opacity: 0.55 })
+            const tl = gsap.timeline({
+              scrollTrigger: { trigger: sectionRef.current, start: 'top 65%', toggleActions: 'play none none reverse' },
+            })
+            tl.to('.fog-haze', { opacity: 0.15, duration: 0.6, ease: 'power2.out' }, 0)
+            tl.to(
+              model.position,
+              { x: 0, duration: 0.6, ease: 'power2.out', onUpdate: canScene.render },
+              0.1,
+            )
+            tl.to(
+              model.rotation,
+              { y: 0, duration: 0.6, ease: 'power2.out', onUpdate: canScene.render },
+              0.1,
+            )
+            tl.fromTo('.fog-copy', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.25)
+            return
+          }
+
+          if (!isDesktop) return
+
+          model.position.x = -2.3
+          model.rotation.y = -Math.PI * 1.8
+          canScene.render()
+
           const tl = gsap.timeline({
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 65%', toggleActions: 'play none none reverse' },
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: '+=300%',
+              scrub: 0.6,
+              pin: pinRef.current,
+              anticipatePin: 1,
+              onUpdate: canScene.render,
+            },
           })
-          tl.to('.fog-haze', { opacity: 0.15, duration: 0.6, ease: 'power2.out' }, 0)
-          tl.fromTo('.fog-subject', { opacity: 0, scale: 0.92 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power2.out' }, 0.1)
-          tl.fromTo('.fog-dust', { opacity: 0 }, { opacity: 0.5, duration: 0.5, ease: 'power2.out' }, 0.2)
-          tl.fromTo('.fog-copy', { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, 0.25)
-          return
-        }
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: '+=300%',
-            scrub: 0.6,
-            pin: pinRef.current,
-            anticipatePin: 1,
-          },
-        })
+          // 0 -> 0.55: the can tumbles in from the left, fog thins as it
+          // arrives. Position and rotation share the same window so the
+          // "coming from left while rotating" motion reads as one arrival.
+          tl.fromTo(model.position, { x: -2.3 }, { x: 0, ease: 'power2.out', duration: 0.55 }, 0)
+          tl.fromTo(model.rotation, { y: -Math.PI * 1.8 }, { y: 0, ease: 'power2.out', duration: 0.55 }, 0)
+          tl.fromTo(canScene.key, { intensity: 1.4 }, { intensity: 2.8, ease: 'none', duration: 0.55 }, 0)
+          tl.fromTo('.fog-haze', { opacity: 0.85 }, { opacity: 0.1, ease: 'none', duration: 0.5 }, 0)
+          tl.fromTo('.fog-dust', { opacity: 0 }, { opacity: 0.5, ease: 'power2.out', duration: 0.3 }, 0.3)
 
-        // 0 -> 0.6: atmosphere thickens, background drifts (linear, per archetype)
-        tl.fromTo('.fog-bg', { yPercent: -4 }, { yPercent: 4, ease: 'none', duration: 0.85 }, 0)
-        tl.fromTo('.fog-haze', { opacity: 0.35 }, { opacity: 0.9, ease: 'none', duration: 0.6 }, 0)
+          // 0.6 -> 1.0: the can has settled — this is the info beat, and the
+          // section is pinned for its whole range, so it holds through this
+          // reveal rather than continuing to scroll past.
+          tl.fromTo(
+            '.fog-copy',
+            { clipPath: 'inset(0 0 100% 0)' },
+            { clipPath: 'inset(0 0 0% 0)', ease: 'power2.out', duration: 0.35 },
+            0.62,
+          )
+          tl.fromTo('.fog-copy', { opacity: 0 }, { opacity: 1, ease: 'power2.out', duration: 0.35 }, 0.62)
+        },
+      )
+    }
 
-        // 0.6 -> 1.0: the reveal — haze clears, subject + title arrive (power2.out)
-        tl.to('.fog-haze', { opacity: 0.1, ease: 'power2.out', duration: 0.4 }, 0.6)
-        tl.fromTo(
-          '.fog-subject',
-          { opacity: 0, scale: 0.92, yPercent: 6 },
-          { opacity: 1, scale: 1, yPercent: 0, ease: 'power2.out', duration: 0.4 },
-          0.6,
-        )
-        tl.fromTo('.fog-dust', { opacity: 0 }, { opacity: 0.5, ease: 'power2.out', duration: 0.35 }, 0.65)
-        tl.fromTo(
-          '.fog-copy',
-          { clipPath: 'inset(0 0 100% 0)' },
-          { clipPath: 'inset(0 0 0% 0)', ease: 'power2.out', duration: 0.35 },
-          0.68,
-        )
-        tl.fromTo('.fog-copy', { opacity: 0 }, { opacity: 1, ease: 'power2.out', duration: 0.35 }, 0.68)
-      },
-    )
+    const onResize = () => canScene.resize()
+    window.addEventListener('resize', onResize)
 
-    return () => mm.revert()
-  }, [])
+    return () => {
+      disposed = true
+      window.removeEventListener('resize', onResize)
+      if (mm) mm.revert()
+      canScene.dispose()
+    }
+  }, [webglOK])
 
   return (
     <section className="fog-chapter" ref={sectionRef}>
       <div className="fog-pin" ref={pinRef}>
-        <div className="fog-bg" />
-        <div className="fog-haze" />
-        <div className="fog-dust" aria-hidden="true">
-          {Array.from({ length: 24 }).map((_, i) => (
-            <span key={i} style={{ '--i': i }} />
-          ))}
-        </div>
+        <div className="fog-stage">
+          <div className="fog-bg" />
+          <div className="fog-haze" />
+          <div className="fog-dust" aria-hidden="true">
+            {Array.from({ length: 24 }).map((_, i) => (
+              <span key={i} style={{ '--i': i }} />
+            ))}
+          </div>
 
-        <img className="fog-subject" src="/section-stills/still_010.webp" alt="2CAL can emerging from fog" />
+          {webglOK ? (
+            <div className="fog-canvas" ref={canvasWrapRef} aria-hidden="true" />
+          ) : (
+            <img className="fog-fallback" src="/section-stills/still_010.webp" alt="2CAL can emerging from fog" />
+          )}
+          {webglOK && !loaded && <div className="fog-loading" aria-hidden="true" />}
+        </div>
 
         <div className="fog-copy">
           <p className="fog-eyebrow">chapter one &middot; the fog</p>
