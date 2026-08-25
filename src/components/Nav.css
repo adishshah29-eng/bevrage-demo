@@ -18,7 +18,7 @@
 
 .nav.is-scrolled {
   color: var(--ink);
-  background: rgba(251, 230, 207, 0.78);
+  background: var(--nav-surface);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border-bottom: 1px solid var(--border);
@@ -55,6 +55,37 @@
 
 .nav.is-scrolled .nav-links a:hover {
   color: var(--ink);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.nav-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  border: 1px solid rgba(246, 239, 228, 0.3);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+}
+
+.nav.is-scrolled .nav-theme {
+  border-color: var(--border);
+}
+
+.nav-theme:hover {
+  transform: rotate(-14deg);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .nav-cta {

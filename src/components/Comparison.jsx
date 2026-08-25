@@ -1,7 +1,6 @@
 import { useLayoutEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Check, X } from '@phosphor-icons/react'
 import './Comparison.css'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -23,15 +22,15 @@ export default function Comparison() {
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       if (reduce) return
 
-      gsap.from('.comparison-card', {
+      gsap.from('.comparison-row', {
         opacity: 0,
-        y: 28,
-        duration: 0.6,
+        x: -20,
+        duration: 0.5,
         ease: 'power2.out',
-        stagger: 0.12,
+        stagger: 0.08,
         scrollTrigger: {
           trigger: sectionRef.current,
-          start: 'top 78%',
+          start: 'top 75%',
           toggleActions: 'play none none reverse',
         },
       })
@@ -42,40 +41,24 @@ export default function Comparison() {
   return (
     <section id="compare" className="comparison" ref={sectionRef}>
       <div className="comparison-head">
-        <h2>coffee vs 2CAL.</h2>
-        <p>Same job, different Tuesday afternoon.</p>
+        <p className="comparison-kicker">the honest comparison</p>
+        <h2>same job, different Tuesday afternoon.</h2>
       </div>
 
-      <div className="comparison-grid">
-        <article className="comparison-card">
-          <h3>Coffee</h3>
-          <ul>
-            {ROWS.map((row) => (
-              <li key={row.label}>
-                <span className="comparison-row-label">{row.label}</span>
-                <span className="comparison-row-value">
-                  <X weight="bold" size={14} />
-                  {row.coffee}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </article>
+      <div className="comparison-table">
+        <div className="comparison-columns" aria-hidden="true">
+          <span />
+          <span>Coffee</span>
+          <span className="is-accent">2CAL</span>
+        </div>
 
-        <article className="comparison-card is-featured">
-          <h3>2CAL</h3>
-          <ul>
-            {ROWS.map((row) => (
-              <li key={row.label}>
-                <span className="comparison-row-label">{row.label}</span>
-                <span className="comparison-row-value is-good">
-                  <Check weight="bold" size={14} />
-                  {row.cal}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </article>
+        {ROWS.map((row) => (
+          <div className="comparison-row" key={row.label}>
+            <span className="comparison-row-label">{row.label}</span>
+            <span className="comparison-row-value">{row.coffee}</span>
+            <span className="comparison-row-value is-good">{row.cal}</span>
+          </div>
+        ))}
       </div>
     </section>
   )

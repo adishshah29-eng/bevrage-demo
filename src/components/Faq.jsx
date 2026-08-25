@@ -34,30 +34,35 @@ export default function Faq() {
 
   return (
     <section id="faq" className="faq">
-      <div className="faq-head">
-        <h2>questions, answered.</h2>
-      </div>
+      <div className="faq-inner">
+        <div className="faq-intro">
+          <p className="faq-kicker">before you order</p>
+          <h2>questions, answered.</h2>
+          <p className="faq-sub">Everything people ask us before their first can. Still curious? Reach out any time.</p>
+        </div>
 
-      <div className="faq-list">
-        {FAQS.map((item, index) => {
-          const isOpen = openIndex === index
-          return (
-            <div className={`faq-item${isOpen ? ' is-open' : ''}`} key={item.q}>
-              <button
-                type="button"
-                className="faq-question"
-                onClick={() => setOpenIndex(isOpen ? -1 : index)}
-                aria-expanded={isOpen}
-              >
-                <span>{item.q}</span>
-                <Plus weight="bold" size={16} className="faq-icon" />
-              </button>
-              <div className="faq-answer">
-                <p>{item.a}</p>
+        <div className="faq-list">
+          {FAQS.map((item, index) => {
+            const isOpen = openIndex === index
+            return (
+              <div className={`faq-item${isOpen ? ' is-open' : ''}`} key={item.q}>
+                <button
+                  type="button"
+                  className="faq-question"
+                  onClick={() => setOpenIndex(isOpen ? -1 : index)}
+                  aria-expanded={isOpen}
+                >
+                  <span className="faq-question-index">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="faq-question-text">{item.q}</span>
+                  <Plus weight="bold" size={16} className="faq-icon" />
+                </button>
+                <div className="faq-answer">
+                  <p>{item.a}</p>
+                </div>
               </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
     </section>
   )

@@ -4,20 +4,45 @@
   border-top: 1px solid var(--border);
 }
 
-.faq-head {
-  max-width: 36rem;
-  margin: 0 auto 2.4rem;
-  text-align: center;
+.faq-inner {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: clamp(2rem, 6vw, 5rem);
+  max-width: 68rem;
+  margin: 0 auto;
 }
 
-.faq-head h2 {
-  font-size: clamp(1.9rem, 4.2vw, 3rem);
+.faq-intro {
+  position: sticky;
+  top: 6rem;
+  align-self: start;
+}
+
+.faq-kicker {
+  margin: 0 0 0.6rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.faq-intro h2 {
+  font-size: clamp(1.9rem, 3.6vw, 2.7rem);
+  line-height: 1.16;
+  margin: 0 0 1rem;
+  text-wrap: balance;
+}
+
+.faq-sub {
   margin: 0;
+  color: var(--ink-dim);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  max-width: 30ch;
 }
 
 .faq-list {
-  max-width: 42rem;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
@@ -33,21 +58,32 @@
 .faq-question {
   width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
   gap: 1rem;
   padding: 1.4rem 0.2rem;
   background: none;
   border: none;
   text-align: left;
-  font-size: 1.02rem;
-  font-weight: 600;
   color: var(--ink);
   cursor: pointer;
 }
 
+.faq-question-index {
+  flex-shrink: 0;
+  font-size: 0.78rem;
+  color: var(--ink-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.faq-question-text {
+  flex: 1;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
 .faq-icon {
   flex-shrink: 0;
+  align-self: center;
   color: var(--accent);
   transition: transform 0.3s ease;
 }
@@ -69,13 +105,26 @@
 .faq-answer p {
   overflow: hidden;
   margin: 0;
-  padding: 0 0.2rem 0;
+  padding: 0 0.2rem 0 2.3rem;
   color: var(--ink-dim);
   font-size: 0.95rem;
   line-height: 1.55;
-  max-width: 58ch;
 }
 
 .faq-item.is-open .faq-answer p {
   padding-bottom: 1.4rem;
+}
+
+@media (max-width: 780px) {
+  .faq-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .faq-intro {
+    position: static;
+  }
+
+  .faq-sub {
+    max-width: none;
+  }
 }

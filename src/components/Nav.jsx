@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
+import { Sun, Moon } from '@phosphor-icons/react'
+import { useTheme } from '../useTheme.js'
 import './Nav.css'
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
     const heroEl = document.querySelector('.hero-wrap')
@@ -24,9 +27,20 @@ export default function Nav() {
         <a href="#shop">shop</a>
         <a href="#social">instagram</a>
       </nav>
-      <a className="nav-cta" href="#shop">
-        Shop 2CAL
-      </a>
+      <div className="nav-right">
+        <button
+          type="button"
+          className="nav-theme"
+          onClick={toggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          {theme === 'dark' ? <Sun weight="bold" size={16} /> : <Moon weight="bold" size={16} />}
+        </button>
+
+        <a className="nav-cta" href="#shop">
+          Shop 2CAL
+        </a>
+      </div>
     </header>
   )
 }
