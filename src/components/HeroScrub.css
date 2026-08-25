@@ -10,6 +10,10 @@
   overflow: hidden;
   background: #0a0908;
   perspective: 1400px;
+  /* The hero stays a dark, cinematic video regardless of the page's
+     light theme, so its own text tokens are scoped and fixed here. */
+  --ink: #f6efe4;
+  --ink-dim: rgba(246, 239, 228, 0.62);
 }
 
 .hero-stage {

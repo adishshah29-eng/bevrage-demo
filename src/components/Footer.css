@@ -1,6 +1,6 @@
 .footer {
-  background: #0a0908;
-  border-top: 1px solid rgba(246, 239, 228, 0.08);
+  background: var(--bg);
+  border-top: 1px solid var(--border);
   padding: clamp(2.4rem, 5vw, 3.2rem) clamp(1.2rem, 6vw, 4rem);
 }
 
@@ -13,13 +13,14 @@
   justify-content: space-between;
   gap: 1.2rem;
   padding-bottom: 1.6rem;
-  border-bottom: 1px solid rgba(246, 239, 228, 0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .footer-logo {
   font-family: var(--font-script);
   font-style: italic;
   font-size: 1.3rem;
+  color: var(--accent);
 }
 
 .footer-links {

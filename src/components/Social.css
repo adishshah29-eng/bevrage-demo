@@ -1,7 +1,7 @@
 .social {
-  background: #0a0908;
+  background: var(--bg);
   padding: clamp(4.5rem, 10vw, 8rem) clamp(1.2rem, 6vw, 4rem);
-  border-top: 1px solid rgba(246, 239, 228, 0.08);
+  border-top: 1px solid var(--border);
 }
 
 .social-head {
@@ -27,15 +27,15 @@
   text-decoration: none;
   font-size: 0.92rem;
   font-weight: 600;
-  border: 1px solid rgba(246, 239, 228, 0.25);
+  border: 1px solid var(--border);
   border-radius: 999px;
   padding: 0.6em 1.1em;
   transition: border-color 0.25s ease, color 0.25s ease;
 }
 
 .social-follow:hover {
-  border-color: var(--accent-soft);
-  color: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .social-grid {
@@ -84,7 +84,9 @@
   padding: 1rem;
   font-size: 0.82rem;
   line-height: 1.35;
-  color: var(--ink);
+  /* Overlaid on a dark product photo, so this stays light regardless
+     of the page theme, same as the Stack ingredient cards. */
+  color: #f6efe4;
 }
 
 @media (max-width: 900px) {

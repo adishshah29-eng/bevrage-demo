@@ -1,5 +1,5 @@
 .stack {
-  background: #0a0908;
+  background: var(--bg);
   padding: clamp(4.5rem, 10vw, 8rem) clamp(1.2rem, 6vw, 4rem);
 }
 
@@ -42,6 +42,10 @@
   border-radius: 1.4rem;
   overflow: hidden;
   border: 1px solid rgba(246, 239, 228, 0.08);
+  /* Sits on a dark product photo regardless of page theme, so its
+     text tokens are scoped and fixed light, same as the hero. */
+  --ink: #f6efe4;
+  --ink-dim: rgba(246, 239, 228, 0.72);
 }
 
 .stack-card.is-featured {
