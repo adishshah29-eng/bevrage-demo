@@ -115,15 +115,15 @@ export default function HeroScrub() {
         },
       })
 
+      // Headline and CTA are visible immediately, not gated behind scroll
+      // (a hero with no legible content at rest is a weak first impression).
+      gsap.set([headlineRef.current, ctaRef.current], { opacity: 1, x: 0, y: 0 })
+
       if (prefersReduced) {
         drawFrame(FRAME_COUNT - 1)
         gsap.set([fogCoolRef.current, fogWarmRef.current], { opacity: 0 })
         gsap.set(canvasRef.current, { filter: 'none' })
-        gsap.set([headlineRef.current, ctaRef.current, '.hero-annotation'], {
-          opacity: 1,
-          x: 0,
-          y: 0,
-        })
+        gsap.set('.hero-annotation', { opacity: 1, x: 0, y: 0 })
         gsap.set('.hero-annotation-tick', { scaleX: 1 })
         return
       }
@@ -139,30 +139,22 @@ export default function HeroScrub() {
         0,
       )
 
-      // Fog -> focus, graded in color, not just blur: cold desaturated
-      // blue-grey sharpens and warms back into the brand's real palette.
+      // Fog -> focus, graded in color, not just blur: a soft, legible
+      // depth-of-field at rest sharpens into full clarity on scroll.
       tl.fromTo(
         canvasRef.current,
-        { filter: 'blur(13px) saturate(0.18) brightness(0.8) contrast(1.05)' },
+        { filter: 'blur(5px) saturate(0.65) brightness(0.94) contrast(1.02)' },
         {
           filter: 'blur(0px) saturate(1) brightness(1) contrast(1)',
           ease: 'none',
-          duration: 0.44,
+          duration: 0.4,
         },
         0,
       )
 
       // Two atmosphere layers cross-fade: cold fog dissipates, warm glow arrives
-      tl.fromTo(fogCoolRef.current, { opacity: 0.6 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0)
-      tl.fromTo(fogWarmRef.current, { opacity: 0 }, { opacity: 0.55, ease: 'none', duration: 0.44 }, 0.04)
-
-      // Headline slides in from the right, breaking the dead-center layout
-      tl.fromTo(
-        headlineRef.current,
-        { opacity: 0, x: 36 },
-        { opacity: 1, x: 0, duration: 0.16, ease: 'none' },
-        0.28,
-      )
+      tl.fromTo(fogCoolRef.current, { opacity: 0.3 }, { opacity: 0, ease: 'none', duration: 0.36 }, 0)
+      tl.fromTo(fogWarmRef.current, { opacity: 0 }, { opacity: 0.5, ease: 'none', duration: 0.4 }, 0.04)
 
       // Ingredient annotations draw in one at a time, spec-sheet style
       tl.fromTo(
@@ -176,14 +168,6 @@ export default function HeroScrub() {
         { opacity: 0, x: -8 },
         { opacity: 1, x: 0, ease: 'none', stagger: 0.1, duration: 0.08 },
         0.48,
-      )
-
-      // CTA lands last, once every annotation has resolved
-      tl.fromTo(
-        ctaRef.current,
-        { opacity: 0, y: 18 },
-        { opacity: 1, y: 0, duration: 0.14, ease: 'none' },
-        0.86,
       )
     }, wrapRef)
 
@@ -265,6 +249,9 @@ export default function HeroScrub() {
 
         {!ready && (
           <div className="hero-loader">
+            <img className="hero-loader-gif" src="/loading.gif" alt="" aria-hidden="true" />
+            <div className="hero-loader-logo">2CAL</div>
+            <p className="hero-loader-tagline">brewing your focus</p>
             <div className="hero-loader-bar">
               <div
                 className="hero-loader-fill"
