@@ -143,7 +143,7 @@ export default function HeroScrub() {
       // blue-grey sharpens and warms back into the brand's real palette.
       tl.fromTo(
         canvasRef.current,
-        { filter: 'blur(24px) saturate(0.08) brightness(0.62) contrast(1.05)' },
+        { filter: 'blur(13px) saturate(0.18) brightness(0.8) contrast(1.05)' },
         {
           filter: 'blur(0px) saturate(1) brightness(1) contrast(1)',
           ease: 'none',
@@ -153,7 +153,7 @@ export default function HeroScrub() {
       )
 
       // Two atmosphere layers cross-fade: cold fog dissipates, warm glow arrives
-      tl.fromTo(fogCoolRef.current, { opacity: 0.85 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0)
+      tl.fromTo(fogCoolRef.current, { opacity: 0.6 }, { opacity: 0, ease: 'none', duration: 0.4 }, 0)
       tl.fromTo(fogWarmRef.current, { opacity: 0 }, { opacity: 0.55, ease: 'none', duration: 0.44 }, 0.04)
 
       // Headline slides in from the right, breaking the dead-center layout
