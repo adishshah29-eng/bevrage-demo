@@ -57,6 +57,26 @@ export default function HeroLab() {
       <ChapterOrbit />
       <div className="herolab-breath" />
       <ChapterArrival />
+
+      <p className="herolab-credit">
+        3D model in &ldquo;The Object&rdquo;: &ldquo;Low Poly Soda Can&rdquo; by{' '}
+        <a href="https://sketchfab.com/myers2860" target="_blank" rel="noreferrer">
+          Myers2860
+        </a>{' '}
+        (
+        <a
+          href="https://sketchfab.com/3d-models/low-poly-soda-can-6e3aafa5e70e48a3a4c2ac7bf7f6c1f1"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Sketchfab
+        </a>
+        ), licensed{' '}
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">
+          CC-BY-4.0
+        </a>
+        .
+      </p>
     </main>
   )
 }

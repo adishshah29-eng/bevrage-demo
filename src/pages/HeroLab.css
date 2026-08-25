@@ -61,6 +61,19 @@
   background: #0a0908;
 }
 
+.herolab-credit {
+  margin: 0;
+  padding: 1.4rem clamp(1.2rem, 6vw, 3rem) 2rem;
+  background: #0a0908;
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(246, 239, 228, 0.4);
+}
+
+.herolab-credit a {
+  color: rgba(246, 239, 228, 0.6);
+}
+
 @media (max-width: 768px) {
   .herolab-hud {
     display: none;
