@@ -181,12 +181,51 @@
   background: #0a0908;
 }
 
-.hero-loader-gif {
-  width: min(220px, 46vw);
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  border-radius: 1rem;
-  box-shadow: 0 20px 50px rgba(242, 121, 15, 0.25);
+.hero-loader-glow {
+  position: absolute;
+  width: min(340px, 60vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 121, 15, 0.35), transparent 70%);
+  filter: blur(10px);
+  animation: loaderPulse 2.6s ease-in-out infinite;
+}
+
+.hero-loader-can {
+  position: relative;
+  width: min(150px, 34vw);
+  object-fit: contain;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.5));
+  animation: loaderFloat 2.6s ease-in-out infinite;
+}
+
+@keyframes loaderFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes loaderPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-loader-can,
+  .hero-loader-glow {
+    animation: none;
+  }
 }
 
 .hero-loader-logo {

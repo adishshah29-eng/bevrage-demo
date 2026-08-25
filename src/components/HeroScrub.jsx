@@ -249,7 +249,8 @@ export default function HeroScrub() {
 
         {!ready && (
           <div className="hero-loader">
-            <img className="hero-loader-gif" src="/loading.gif" alt="" aria-hidden="true" />
+            <div className="hero-loader-glow" />
+            <img className="hero-loader-can" src="/can-cutout.png" alt="" aria-hidden="true" />
             <div className="hero-loader-logo">2CAL</div>
             <p className="hero-loader-tagline">brewing your focus</p>
             <div className="hero-loader-bar">
