@@ -1,19 +1,14 @@
-import Nav from './components/Nav.jsx'
-import HeroScrub from './components/HeroScrub.jsx'
-import Stack from './components/Stack.jsx'
-import Shop from './components/Shop.jsx'
-import Social from './components/Social.jsx'
-import Footer from './components/Footer.jsx'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Home from './pages/Home.jsx'
+import HeroLab from './pages/HeroLab.jsx'
 
 export default function App() {
   return (
-    <main className="app">
-      <Nav />
-      <HeroScrub />
-      <Stack />
-      <Shop />
-      <Social />
-      <Footer />
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/hero" element={<HeroLab />} />
+      </Routes>
+    </BrowserRouter>
   )
 }

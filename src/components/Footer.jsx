@@ -7,7 +7,10 @@ export default function Footer() {
         <span className="footer-logo">2CAL</span>
         <nav className="footer-links">
           <a href="#stack">the stack</a>
+          <a href="#compare">coffee vs 2cal</a>
+          <a href="#reviews">reviews</a>
           <a href="#shop">shop</a>
+          <a href="#faq">faq</a>
           <a href="#social">instagram</a>
         </nav>
       </div>
